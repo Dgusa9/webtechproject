@@ -2,12 +2,21 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import "./Form.css";
 
+const categories = [
+  "Default",
+  "Arts & Entertainment",
+  "Health & Medical",
+  "Hotels & Travel",
+  "Food",
+  "Professional Services",
+];
+
 export function Form() {
   const [keyword, setKeyword] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
+  const [suggestions, setSuggestions] = useState({});
   const [suggestionsActive, setSuggestionsActive] = useState([]);
   const [suggestionIndex, setSuggestionIndex] = useState(-1);
-  const [category, setCategory] = useState();
+  const [category, setCategory] = useState(categories[0]);
 
   useEffect(() => {
     async function getSuggestions() {
@@ -15,7 +24,7 @@ export function Form() {
         const fetchedSuggestions = await axios.get(
           `http://localhost:3002/autocomplete/${keyword}`
         );
-        setSuggestions(fetchedSuggestions.data.terms.map((term) => term.text));
+        setSuggestions(fetchedSuggestions.data);
         setSuggestionsActive(true);
       } else {
         setSuggestionsActive(false);
@@ -53,7 +62,8 @@ export function Form() {
     }
     // ENTER
     else if (e.keyCode === 13) {
-      setKeyword(suggestions[suggestionIndex]);
+      setKeyword(suggestions.terms[suggestionIndex].text);
+      setCategory(suggestions.categories[suggestionIndex].title);
       setSuggestionIndex(0);
       setSuggestionsActive(false);
     }
@@ -62,7 +72,7 @@ export function Form() {
   const Suggestions = () => {
     return (
       <ul className="list-group">
-        {suggestions.map((suggestion, index) => {
+        {(suggestions.terms || []).map((suggestion, index) => {
           return (
             <li
               className={`list-group-item list-group-item-action  ${
@@ -71,7 +81,7 @@ export function Form() {
               key={index}
               onClick={handleClick}
             >
-              {suggestion}
+              {suggestion.text}
             </li>
           );
         })}
@@ -109,11 +119,13 @@ export function Form() {
           </label>
 
           <select id="location" className="form-select form-control">
-            <option selected>Default</option>
-            <option>Arts & Entertainment</option>
-            <option>Health & Medical</option>
-            <option>Food</option>
-            <option>Professional Services</option>
+            {categories.map((cat) => {
+              if (cat == category) {
+                return <option selected>{cat}</option>;
+              } else {
+                return <option>{cat}</option>;
+              }
+            })}
           </select>
         </div>
         <div className="col-12">
