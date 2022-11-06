@@ -17,6 +17,7 @@ export function Form() {
   const [suggestionsActive, setSuggestionsActive] = useState([]);
   const [suggestionIndex, setSuggestionIndex] = useState(-1);
   const [category, setCategory] = useState(categories[0]);
+  const [isAutoDetectChecked, setIsAutoDetectChecked] = useState(false);
 
   useEffect(() => {
     async function getSuggestions() {
@@ -132,7 +133,12 @@ export function Form() {
           <label for="location" className="required">
             Location
           </label>
-          <input type="text" id="location" className="form-control" />
+          <input
+            type="text"
+            id="location"
+            className="form-control"
+            disabled={isAutoDetectChecked}
+          />
         </div>
         <div className="col-12">
           <div className="form-check">
@@ -140,6 +146,8 @@ export function Form() {
               className="form-check-input"
               type="checkbox"
               id="gridCheck"
+              checked={isAutoDetectChecked}
+              onChange={() => setIsAutoDetectChecked((prev) => !prev)}
             />
             <label className="form-check-label" for="gridCheck">
               Auto-detect my location
