@@ -20,6 +20,16 @@ export function Form() {
   const [isAutoDetectChecked, setIsAutoDetectChecked] = useState(false);
   const googleApiKey = "AIzaSyC_98c8go6FbejPvJwLUDpKhdAF6pkGCh8";
 
+  function handleClear(e) {
+    e.preventDefault();
+    setKeyword("");
+    setCategory(categories[0]);
+    setSuggestions({});
+    setSuggestionIndex(-1);
+    setSuggestionsActive([]);
+    setIsAutoDetectChecked(false);
+  }
+
   useEffect(() => {
     async function getSuggestions() {
       if (keyword.length > 1) {
@@ -172,7 +182,11 @@ export function Form() {
             Submit
           </button>
 
-          <button type="submit" className="btn btn-primary m-2">
+          <button
+            onClick={handleClear}
+            type="submit"
+            className="btn btn-primary m-2"
+          >
             Clear
           </button>
         </div>
