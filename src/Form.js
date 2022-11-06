@@ -18,6 +18,7 @@ export function Form() {
   const [suggestionIndex, setSuggestionIndex] = useState(-1);
   const [category, setCategory] = useState(categories[0]);
   const [isAutoDetectChecked, setIsAutoDetectChecked] = useState(false);
+  const googleApiKey = "AIzaSyC_98c8go6FbejPvJwLUDpKhdAF6pkGCh8";
 
   useEffect(() => {
     async function getSuggestions() {
@@ -70,6 +71,8 @@ export function Form() {
     }
   };
 
+  const handleSubmit = async () => {};
+
   const Suggestions = () => {
     return (
       <ul className="list-group">
@@ -103,6 +106,7 @@ export function Form() {
             className="form-control"
             id="keyword"
             value={keyword}
+            required={true}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
           />
@@ -119,7 +123,11 @@ export function Form() {
             Category
           </label>
 
-          <select id="location" className="form-select form-control">
+          <select
+            id="location"
+            className="form-select form-control"
+            required={true}
+          >
             {categories.map((cat) => {
               if (cat == category) {
                 return <option selected>{cat}</option>;
@@ -138,6 +146,7 @@ export function Form() {
             id="location"
             className="form-control"
             disabled={isAutoDetectChecked}
+            required={true}
           />
         </div>
         <div className="col-12">
@@ -155,8 +164,12 @@ export function Form() {
           </div>
         </div>
         <div className="col-12  justify-content-between text-center">
-          <button type="submit" className="btn btn-danger m-2">
-            Sign in
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className="btn btn-danger m-2"
+          >
+            Submit
           </button>
 
           <button type="submit" className="btn btn-primary m-2">
