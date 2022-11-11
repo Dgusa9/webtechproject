@@ -18,7 +18,8 @@ export function Form() {
   const [suggestionIndex, setSuggestionIndex] = useState(-1);
   const [category, setCategory] = useState(categories[0]);
   const [isAutoDetectChecked, setIsAutoDetectChecked] = useState(false);
-  const googleApiKey = "AIzaSyC_98c8go6FbejPvJwLUDpKhdAF6pkGCh8";
+  const [location, setLocation] = useState("");
+  const [distance, setDistance] = useState("");
 
   function handleClear(e) {
     e.preventDefault();
@@ -51,6 +52,11 @@ export function Form() {
     setKeyword(query);
   };
 
+  const handleLocationChange = (e) => {
+    const query = e.target.value;
+    setLocation(query);
+  };
+
   const handleClick = (e) => {
     setSuggestions([]);
     setKeyword(e.target.innerText);
@@ -81,7 +87,14 @@ export function Form() {
     }
   };
 
-  const handleSubmit = async () => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("inside handleSubmit");
+    const result = await axios.get(
+      `http://localhost:3002/submit/${location}/${category}/${keyword}/${distance}`
+    );
+    console.log(result);
+  };
 
   const Suggestions = () => {
     return (
@@ -108,7 +121,7 @@ export function Form() {
       <h3>Business search</h3>
       <form className="row row-cols-2 g-5">
         <div className="col-12 ">
-          <label for="keyword" className="text-start required">
+          <label htmlFor="keyword" className="text-start required">
             Keyword
           </label>
           <input
@@ -123,18 +136,23 @@ export function Form() {
           {suggestionsActive && <Suggestions />}
         </div>
         <div className="col-6">
-          <label for="distance" className="form-label">
+          <label htmlFor="distance" className="form-label">
             Distance
           </label>
-          <input type="text" className="form-control" id="distance" />
+          <input
+            type="text"
+            className="form-control"
+            onChange={(e) => setDistance(e.target.value)}
+            id="distance"
+          />
         </div>
         <div className="col-6">
-          <label for="category" className="required">
+          <label htmlFor="category" className="required">
             Category
           </label>
 
           <select
-            id="location"
+            id="category"
             className="form-select form-control"
             required={true}
           >
@@ -148,7 +166,7 @@ export function Form() {
           </select>
         </div>
         <div className="col-12">
-          <label for="location" className="required">
+          <label htmlFor="location" className="required">
             Location
           </label>
           <input
@@ -156,6 +174,7 @@ export function Form() {
             id="location"
             className="form-control"
             disabled={isAutoDetectChecked}
+            onChange={handleLocationChange}
             required={true}
           />
         </div>
@@ -168,7 +187,7 @@ export function Form() {
               checked={isAutoDetectChecked}
               onChange={() => setIsAutoDetectChecked((prev) => !prev)}
             />
-            <label className="form-check-label" for="gridCheck">
+            <label className="form-check-label" htmlFor="gridCheck">
               Auto-detect my location
             </label>
           </div>
